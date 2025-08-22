@@ -7,16 +7,16 @@ export default function Forum() {
   const [formData, setFormData] = useState({
     username: "",
     email: "",
-    University: "",
-    Program: "",
-    Degree: "",
-    Season: "",
-    Status: "",
-    Date: "",
-    GPA: "",
-    General_GRE: "",
-    Verbal_GRE: "",
-    Aw_GRE: ""
+    university: "",
+    program: "",
+    degree: "",
+    season: "",
+    status: "",
+    date: "",
+    gpa: "",
+    general_gre: "",
+    verbal_gre: "",
+    aw_gre: ""
   });
 
   const handleChange = (e) => {
@@ -35,16 +35,16 @@ export default function Forum() {
       setFormData({
         username: "",
         email: "",
-        University: "",
-        Program: "",
-        Degree: "",
-        Season: "",
-        Status: "",
-        Date: "",
-        GPA: "",
-        General_GRE: "",
-        Verbal_GRE: "",
-        Aw_GRE: ""
+        university: "",
+        program: "",
+        degree: "",
+        season: "",
+        status: "",
+        date: "",
+        gpa: "",
+        general_gre: "",
+        verbal_gre: "",
+        aw_gre: ""
       });
     } catch (error) {
       console.error("Error submitting application:", error);
@@ -60,11 +60,11 @@ export default function Forum() {
           {Object.keys(formData).map((field) => (
             <div className="col-md-6" key={field}>
               <input
-                type={field === "Date" ? "date" : "text"}
+                type={field === "date" ? "date" : "text"}
                 name={field}
-                value={formData[field]} // ✅ Controlled
+                value={formData[field]}
                 onChange={handleChange}
-                placeholder={field.replace("_", " ")}
+                placeholder={field.replace(/_/g, " ")}
                 className="form-control"
               />
             </div>
