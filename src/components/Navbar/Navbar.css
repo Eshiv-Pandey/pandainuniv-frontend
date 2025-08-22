@@ -1,0 +1,13 @@
+img{
+  height:3rem !important;
+}
+
+nav a:hover{
+  color:black!important;
+  font-weight:600;
+}
+
+nav{
+  background-color: #F8F9FA;
+}
+
