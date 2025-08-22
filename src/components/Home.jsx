@@ -2,7 +2,7 @@ export default function Home() {
   return (
     <div className="row home">
       <div className="blue text-center py-5">
-        <h1 className="mt-3">Share Your University Admission Results Now.</h1>
+        <h1 className="mt-3"> Your University Admission Results Now.</h1>
         <h2>Real Results. Real People. Real Grad Journeys.</h2>
         <br />
         <br />
