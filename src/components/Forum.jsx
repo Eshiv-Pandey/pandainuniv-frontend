@@ -32,15 +32,16 @@ export default function Forum() {
         <form onSubmit={handleSubmit} className="row g-3">
           {Object.keys(formData).map((field) => (
             <div className="col-md-6" key={field}>
-              <input
-                type={field === "Date" ? "date" : "text"}
-                name={field}
-                value={formData[field]}
-                onChange={handleChange}
-                placeholder={field.replace("_", " ")}
-                className="form-control"
-              />
-            </div>
+            <input
+              type={field === "Date" ? "date" : "text"}
+              name={field}
+              value={formData[field] || ""} // ✅ Prevent undefined
+              onChange={handleChange}
+              placeholder={field.replace("_", " ")}
+              className="form-control"
+            />
+          </div>
+          
           ))}
           <div className="col-12">
             <button type="submit" className="btn btn-success">Submit</button>
