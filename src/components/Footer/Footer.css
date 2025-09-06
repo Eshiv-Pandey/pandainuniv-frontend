@@ -1,0 +1,11 @@
+footer a{
+  color: #5A6773 !important;
+  text-decoration: none !important;
+}
+
+
+a:hover{
+  color:black;
+  font-weight:500;
+  text-decoration: none !important;
+}
