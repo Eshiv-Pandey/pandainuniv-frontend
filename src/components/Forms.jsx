@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Autosuggest from "react-autosuggest";
 import axios from "axios";
-import "./Forms.css"; // Import the new CSS
+import "./Forms.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -30,7 +29,6 @@ export default function Forms() {
   const [programsByUniversity, setProgramsByUniversity] = useState({});
   const [useOtherUniversity, setUseOtherUniversity] = useState(false);
   const [useOtherProgram, setUseOtherProgram] = useState(false);
-
   const [uniSuggestions, setUniSuggestions] = useState([]);
   const [progSuggestions, setProgSuggestions] = useState([]);
   const [error, setError] = useState("");
@@ -41,7 +39,6 @@ export default function Forms() {
         const res = await axios.get(`${API_BASE_URL}/api/universities`);
         setUniversities(res.data.universities || []);
         setProgramsByUniversity(res.data.programsByUniversity || {});
-        setError("");
       } catch (err) {
         console.error(err);
         setError("Failed to load university data.");
@@ -57,10 +54,7 @@ export default function Forms() {
   };
 
   const getSuggestionValue = (suggestion) => suggestion;
-
-  const renderSuggestion = (suggestion) => (
-    <div className="react-autosuggest__suggestion">{suggestion}</div>
-  );
+  const renderSuggestion = (suggestion) => <div>{suggestion}</div>;
 
   const handleUniChange = (e, { newValue }) => {
     setFormData({ ...formData, University: newValue, Program: "" });
@@ -74,6 +68,8 @@ export default function Forms() {
     e.preventDefault();
     try {
       const payload = { ...formData };
+
+      // Replace with "Other" fields if used
       if (useOtherUniversity && formData.University_Other) {
         payload.University = formData.University_Other;
       }
@@ -81,9 +77,24 @@ export default function Forms() {
         payload.Program = formData.Program_Other;
       }
 
-      await axios.post(`${API_BASE_URL}/api/applications/submit`, payload);
-      alert("Application submitted successfully!");
-      window.location.reload();
+      // Ensure date is formatted as yyyy-mm-dd
+      if (payload.Date instanceof Date) {
+        payload.Date = payload.Date.toISOString().split("T")[0];
+      }
+
+      // Make sure email exists for userId
+      if (!payload.email) {
+        payload.email = "anonymous";
+      }
+
+      const res = await axios.post(`${API_BASE_URL}/api/applications`, payload);
+
+      if (res.data.success) {
+        alert("Application submitted successfully!");
+        window.location.reload();
+      } else {
+        alert("Failed to submit application");
+      }
     } catch (err) {
       console.error(err);
       alert("Failed to submit application");
@@ -106,9 +117,7 @@ export default function Forms() {
     <div className="row">
       <div className="container mt-5 col-10 col-md-8 col-lg-6">
         <h2 className="mb-3">Submit Your Application</h2>
-
         {error && <div className="alert alert-warning">{error}</div>}
-
         <form onSubmit={onSubmit} className="row g-3">
           {/* Name & Email */}
           <div className="col-md-6">
@@ -123,7 +132,6 @@ export default function Forms() {
               required
             />
           </div>
-
           <div className="col-md-6">
             <label className="form-label">Email</label>
             <input
@@ -187,9 +195,7 @@ export default function Forms() {
                   setUseOtherProgram(false);
                 }}
               />
-              <label className="form-check-label">
-                My university is not listed
-              </label>
+              <label className="form-check-label">My university is not listed</label>
             </div>
           </div>
 
@@ -236,9 +242,7 @@ export default function Forms() {
                   setFormData({ ...formData, Program: "", Program_Other: "" });
                 }}
               />
-              <label className="form-check-label">
-                My program is not listed
-              </label>
+              <label className="form-check-label">My program is not listed</label>
             </div>
           </div>
 
@@ -249,21 +253,16 @@ export default function Forms() {
               type="text"
               className="form-control"
               value={formData.Degree}
-              onChange={(e) =>
-                setFormData({ ...formData, Degree: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, Degree: e.target.value })}
               required
             />
           </div>
-
           <div className="col-md-6">
             <label className="form-label">Season</label>
             <select
               className="form-control"
               value={formData.Season}
-              onChange={(e) =>
-                setFormData({ ...formData, Season: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, Season: e.target.value })}
               required
             >
               <option value="">Select Season</option>
@@ -273,39 +272,32 @@ export default function Forms() {
               <option value="Winter">Winter</option>
             </select>
           </div>
-
           <div className="col-md-6">
             <label className="form-label">Status</label>
             <select
               className="form-control"
               value={formData.Status}
-              onChange={(e) =>
-                setFormData({ ...formData, Status: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, Status: e.target.value })}
               required
             >
               <option value="">Select Status</option>
               <option value="Accepted">Accepted</option>
               <option value="Rejected">Rejected</option>
               <option value="Waitlisted">Waitlisted</option>
-              <option value="Pending">Pending</option>
+              <option value="Applied">Applied</option>
             </select>
           </div>
-
           <div className="col-md-6">
-            <label className="form-label">Date</label><br/>
+            <label className="form-label">Date</label>
             <DatePicker
               selected={formData.Date ? new Date(formData.Date) : null}
-              onChange={(date) =>
-                setFormData({ ...formData, Date: date.toISOString().split("T")[0] })
-              }
+              onChange={(date) => setFormData({ ...formData, Date: date })}
               className="form-control"
               placeholderText="Select a date"
               dateFormat="yyyy-MM-dd"
               required
             />
           </div>
-
 
           {/* Scores */}
           <div className="col-md-4">
@@ -314,16 +306,13 @@ export default function Forms() {
               type="number"
               step="0.01"
               min="0"
-              max="4.0"
+              max="10"
               className="form-control"
               value={formData.GPA}
-              onChange={(e) =>
-                setFormData({ ...formData, GPA: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, GPA: e.target.value })}
               required
             />
           </div>
-
           <div className="col-md-4">
             <label className="form-label">GRE General</label>
             <input
@@ -338,7 +327,6 @@ export default function Forms() {
               required
             />
           </div>
-
           <div className="col-md-4">
             <label className="form-label">GRE Verbal</label>
             <input
@@ -347,13 +335,10 @@ export default function Forms() {
               max="170"
               className="form-control"
               value={formData.Verbal_GRE}
-              onChange={(e) =>
-                setFormData({ ...formData, Verbal_GRE: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, Verbal_GRE: e.target.value })}
               required
             />
           </div>
-
           <div className="col-md-4">
             <label className="form-label mt-2">GRE AW</label>
             <input
@@ -363,9 +348,7 @@ export default function Forms() {
               max="6"
               className="form-control"
               value={formData.Aw_GRE}
-              onChange={(e) =>
-                setFormData({ ...formData, Aw_GRE: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, Aw_GRE: e.target.value })}
               required
             />
           </div>

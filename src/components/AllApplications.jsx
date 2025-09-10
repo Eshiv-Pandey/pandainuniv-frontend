@@ -7,8 +7,8 @@ export default function AllApplications() {
 
   useEffect(() => {
     axios
-      .get(`${API_URL}/api/applications/all`)
-      .then((res) => setAll(res.data))
+      .get(`${API_URL}/api/applications`)
+      .then((res) => setAll(res.data.applications))
       .catch((err) => console.error("Fetch error:", err));
   }, [API_URL]);
 
@@ -17,7 +17,7 @@ export default function AllApplications() {
       <h2 className="mb-4">All Applications</h2>
       <div className="row">
         {all.map((app) => (
-          <div className="col-12 col-md-6 col-lg-4 col-xl-3 mb-4" key={app._id}>
+          <div className="col-12 col-md-6 col-lg-4 col-xl-3 mb-4" key={app.applicationID}>
             <div className="card h-100 shadow-sm">
               <div className="card-body">
                 <h5 className="card-title">{app.University}</h5>
@@ -29,7 +29,7 @@ export default function AllApplications() {
                 <span className="badge bg-primary">{app.Status}</span>
               </div>
               <div className="card-footer text-muted">
-                Added by: {app.user?.username || "Unknown"}
+                Added by: {app.userId || "Unknown"}
               </div>
             </div>
           </div>
